@@ -4,8 +4,8 @@
             <div class='box' v-for='all in arr' :key='all'>{{ all }}</div>
         </transition-group>
         <div class='button' @click='shuffler()'>Shuffle</div>
-        <div class='button' @click='auto($event)'>Auto Shuffle</div>
-        <div class='button' @click='stop($event)'>Stop</div>
+        <div class='button' @click='auto()' v-if='show'>Auto Shuffle</div>
+        <div class='button' @click='stop()' v-else>Stop</div>
     </div>
 </template>
 
@@ -18,19 +18,25 @@ export default {
     name: "simple-shuffle",
     data(){
         return {
-            arr: []
+            arr: [],
+            show: true,
+            autoIn: null
         }
     },
     methods: {
         shuffler(){
         	this.arr =  _.shuffle(this.arr);
         },
-        auto(e){
+        auto(){
         	this.shuffler();
-        	setInterval(()=>{
+        	this.autoIn = setInterval(()=>{
             	this.shuffler();
             },500);
-            e.target.style.display = 'none';
+            this.show = false;
+        },
+        stop(){
+            clearInterval(this.autoIn);
+            this.show = true;
         }
     },
     mounted(){
